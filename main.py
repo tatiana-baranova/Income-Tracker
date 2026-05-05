@@ -70,7 +70,27 @@ def main(page: ft.Page):
 
 
     def show_statistics(e):
-        pass
+        def close_stat_dialog(e):
+            stats_dialog.open = False
+            page.update()
+        total_income = sum(item["amount"] for item in operations if item["amount"] > 0)
+        total_expenses = sum(item["amount"] for item in operations if item["amount"] < 0)
+
+        stats_dialog = ft.AlertDialog(
+            title=ft.Text('Statistics'),
+            content=ft.Column([
+                ft.Text(f"Total income: $ {total_income:.2f}"),
+                ft.Text(f"Total expenses: $ {total_expenses:.2f}"),
+                ft.Text(f"Net balance: $ {total_income + total_expenses:.2f}")
+            ], tight=True),
+            actions=[
+                ft.TextButton("Close", on_click=close_stat_dialog)
+            ]
+        )
+        page.overlay.append(stats_dialog)
+        stats_dialog.open = True
+        page.update()
+
 
     add_button = ft.FloatingActionButton(
         icon=ft.Icons.ADD,
